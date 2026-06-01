@@ -1,11 +1,13 @@
 const { response } = require("express");
-const authorService = require("./author.service");
+const authorService = require("./authors.service");
+const authors = require("./authors.route");
 
 const getAuthors = async (request, response) => {
   try {
     const authors = await authorService.getAuthors();
     response.status(200).send({ statusCode: 200, authors });
   } catch (e) {
+    console.error(e);
     response.status(500).send({
       statusCode: 500,
       message: "Errore during user request",
@@ -20,6 +22,7 @@ const createAuthor = async (request, response) => {
 
     response.status(201).send({ statusCode: 201, author });
   } catch (e) {
+    console.error(e);
     response.status(500).send({
       statusCode: 500,
       message: "Errore during user request",
@@ -38,6 +41,7 @@ const getSingleAuthor = async (request, response) => {
     }
     response.status(200).send({ statusCode: 200, author });
   } catch (e) {
+    console.error(e);
     response.status(500).send({
       statusCode: 500,
       message: "Errore during user request",
@@ -57,6 +61,7 @@ const editAuthor = async (request, response) => {
     }
     response.status(200).send({ statusCode: 200, author });
   } catch (e) {
+    console.error(e);
     response.status(500).send({
       statusCode: 500,
       message: "Errore during user request",
@@ -68,12 +73,33 @@ const deleteAuthor = async (request, response) => {
     const { id } = request.params;
     const author = await authorService.deleteAuthor(id);
     if (!author) {
+      console.error(e);
       return response
         .status(404)
         .send({ statusCode: 404, message: "Autore non trovato!" });
     }
     response.status(200).send({ statusCode: 200, author });
   } catch (e) {
+    console.error(e);
+    response.status(500).send({
+      statusCode: 500,
+      message: "Errore during user request",
+    });
+  }
+};
+const getPostsByAuthor = async (request, response) => {
+  try {
+    const { id } = request.params;
+    const blogPosts = await authorService.getPostsByAuthor(id);
+
+    if (!blogPosts) {
+      return response
+        .status(404)
+        .send({ statusCode: 404, message: "Autore non trovato!" });
+    }
+    response.status(200).send({ statusCode: 200, blogPosts });
+  } catch (e) {
+    console.error(e);
     response.status(500).send({
       statusCode: 500,
       message: "Errore during user request",
@@ -87,4 +113,5 @@ module.exports = {
   getSingleAuthor,
   editAuthor,
   deleteAuthor,
+  getPostsByAuthor,
 };

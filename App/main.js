@@ -3,11 +3,13 @@ const express = require("express");
 const initServer = require("./config/db");
 const PORT = 9099;
 const server = express();
-const authorsRotue = require("./modules/authors/authors.route");
+const authorsRoute = require("./modules/authors/authors.route");
+const blogPostsRoute = require("./modules/blogPosts/blogPosts.route");
 const cors = require("cors");
 
 server.use(cors());
 server.use(express.json());
-server.use("/", authorsRotue);
+server.use("/authors", authorsRoute);
+server.use("/blogPosts", blogPostsRoute);
 
 initServer(PORT, server);

@@ -2,12 +2,13 @@ const express = require("express");
 const authors = express.Router();
 const authorController = require("./authors.controller");
 
-authors.get("/authors", authorController.getAuthors);
-authors.get("/authors/:id", authorController.getSingleAuthor);
-authors.post("/authors", authorController.createAuthor);
+authors.get("/", authorController.getAuthors);
+authors.get("/:id", authorController.getSingleAuthor);
+authors.post("/", authorController.createAuthor);
 
-// // EXTRA
-authors.put("/authors/:id", authorController.editAuthor);
-authors.delete("/authors/:id", authorController.deleteAuthor);
+// EXTRA
+authors.get("/:id/blogPosts/", authorController.getPostsByAuthor);
+authors.put("/:id", authorController.editAuthor);
+authors.delete("/:id", authorController.deleteAuthor);
 
 module.exports = authors;

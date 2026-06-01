@@ -1,5 +1,5 @@
 const authorSchema = require("./authors.schema");
-
+const blogPostSchema = require("../blogPosts/blogPosts.schema");
 const getAuthors = async () => {
   const authors = await authorSchema.find();
   return authors;
@@ -25,10 +25,18 @@ const deleteAuthor = async (id) => {
   const author = await authorSchema.findByIdAndDelete(id);
   return author;
 };
+
+const getPostsByAuthor = async (id) => {
+  const author = await authorSchema.findById(id);
+  if (!author) return null;
+
+  return await blogPostSchema.find({ author: author.email });
+};
 module.exports = {
   getAuthors,
   createAuthor,
   getSingleAuthor,
   editAuthor,
   deleteAuthor,
+  getPostsByAuthor,
 };
