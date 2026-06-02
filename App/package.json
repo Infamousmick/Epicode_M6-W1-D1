@@ -5,7 +5,6 @@
   "description": "Strive Blog",
   "license": "ISC",
   "author": "Infamick",
-  "type": "commonjs",
   "main": "main.js",
   "scripts": {
     "dev": "nodemon main.js",
