@@ -11,5 +11,4 @@ server.use(cors());
 server.use(express.json());
 server.use("/authors", authorsRoute);
 server.use("/blogPosts", blogPostsRoute);
-
 initServer(PORT, server);
