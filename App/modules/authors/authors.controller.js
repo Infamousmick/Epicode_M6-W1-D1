@@ -1,6 +1,7 @@
 const { res } = require("express");
 const authorService = require("./authors.service");
 const authors = require("./authors.route");
+const { sendMail } = require("../../modules/mail/mail");
 
 const getAuthors = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ const getAuthors = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -20,12 +21,19 @@ const createAuthor = async (req, res) => {
     const { body } = req;
     const author = await authorService.createAuthor(body);
 
+    if (author.email) {
+      await sendMail(
+        author.email,
+        "Benvenuto a Bordo!",
+        `Ciao ${author.firstName}, la tua registrazione è confermata!`,
+      );
+    }
     res.status(201).send({ statusCode: 201, author });
   } catch (e) {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -44,7 +52,7 @@ const getSingleAuthor = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -64,7 +72,7 @@ const editAuthor = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -83,7 +91,7 @@ const deleteAuthor = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -102,7 +110,7 @@ const getPostsByAuthor = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };
@@ -116,14 +124,16 @@ const uploadAvatar = async (req, res) => {
     });
 
     if (!updateAuthor) {
-      return res.status(404).send({ statusCode: 404, message: "Autore non trovato" });
+      return res
+        .status(404)
+        .send({ statusCode: 404, message: "Autore non trovato" });
     }
     res.status(200).send({ statusCode: 200, author: updateAuthor });
   } catch (e) {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Errore during user req",
+      message: "Errore during user request",
     });
   }
 };

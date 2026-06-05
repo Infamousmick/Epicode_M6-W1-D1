@@ -1,5 +1,6 @@
 const authorsSchema = require("../authors/authors.schema");
 const blogPostService = require("./blogPosts.service");
+const { sendMail } = require("../../modules/mail/mail");
 
 const getPosts = async (req, res) => {
   try {
@@ -16,7 +17,7 @@ const getPosts = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Error during user req",
+      message: "Error during user request",
     });
   }
 };
@@ -35,7 +36,7 @@ const getSinglePost = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Error during user req",
+      message: "Error during user request",
     });
   }
 };
@@ -44,12 +45,19 @@ const createPost = async (req, res) => {
   try {
     const { body } = req;
     const blogPost = await blogPostService.createPost(body);
+    if (blogPost.author) {
+      await sendMail(
+        blogPost.author,
+        "Post caricato su Strive Blog!",
+        `Ciao ${blogPost.author}, il tuo post è stato caricato. Contenuto post: ${blogPost.content}`,
+      );
+    }
     res.status(201).send({ statusCode: 201, blogPost });
   } catch (e) {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Error during user req",
+      message: "Error during user request",
     });
   }
 };
@@ -70,7 +78,7 @@ const editPost = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Error during user req",
+      message: "Error during user request",
     });
   }
 };
@@ -92,7 +100,7 @@ const deletePost = async (req, res) => {
     console.error(e);
     res.status(500).send({
       statusCode: 500,
-      message: "Error during user req",
+      message: "Error during user request",
     });
   }
 };
@@ -105,14 +113,16 @@ const uploadCover = async (req, res) => {
       cover: imageUrl,
     });
     if (!updatedPost) {
-      return res.status(404).send({ statusCode: 404, message: "Post non trovato" });
+      return res
+        .status(404)
+        .send({ statusCode: 404, message: "Post non trovato" });
     }
     res.status(200).send({ statusCode: 200, cover: updatedPost });
   } catch (e) {
     console.error(e);
     res
       .status(500)
-      .send({ statusCode: 550, message: "Error during user req" });
+      .send({ statusCode: 550, message: "Error during user request" });
   }
 };
 module.exports = {
