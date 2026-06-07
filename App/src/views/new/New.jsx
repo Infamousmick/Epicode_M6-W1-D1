@@ -8,12 +8,12 @@ import draftToHtml from "draftjs-to-html";
 
 const NewBlogPost = (props) => {
   const [text, setText] = useState("");
+  const [form, setForm] = useState({});
+  const [coverFile, setCoverFile] = useState(null);
 
   const handleChange = useCallback((value) => {
     setText(draftToHtml(value));
   }, []);
-
-  const [form, setForm] = useState({});
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -21,6 +21,9 @@ const NewBlogPost = (props) => {
       ...form,
       [id]: value,
     });
+  };
+  const handleFileChange = (e) => {
+    setCoverFile(e.target.files[0]);
   };
 
   const handleSubmit = async (e) => {
@@ -48,7 +51,30 @@ const NewBlogPost = (props) => {
       });
 
       if (response.ok) {
-        alert("Articolo creato con successo!");
+        const data = await response.json();
+
+        const newPostId = data.blogPost._id;
+
+        if (coverFile) {
+          const formData = new FormData();
+          formData.append("cover", coverFile);
+
+          const coverResponse = await fetch(
+            `http://localhost:9099/blogPosts/${newPostId}/cover`,
+            {
+              method: "PATCH",
+              body: formData,
+            },
+          );
+
+          if (coverResponse.ok) {
+            alert("Articolo e copertina creati con successo! 🎉");
+          } else {
+            alert("Articolo creato, ma c'è stato un errore con la foto.");
+          }
+        } else {
+          alert("Articolo creato con successo (senza copertina)");
+        }
       } else {
         alert(
           "Errore nella creazione. Sicuro che il titolo sia sotto i 20 caratteri?",
@@ -80,6 +106,11 @@ const NewBlogPost = (props) => {
             <option>Coding</option>
             <option>Modding</option>
           </Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="cover" className="mt-3">
+          <Form.Label>Copertina Articolo</Form.Label>
+          <Form.Control type="file" onChange={handleFileChange} />
         </Form.Group>
 
         <Form.Group controlId="blog-content" className="mt-3">
