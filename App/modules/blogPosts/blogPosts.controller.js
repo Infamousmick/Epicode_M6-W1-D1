@@ -1,4 +1,3 @@
-const authorsSchema = require("../authors/authors.schema");
 const blogPostService = require("./blogPosts.service");
 const { sendMail } = require("../../modules/mail/mail");
 
@@ -125,6 +124,114 @@ const uploadCover = async (req, res) => {
       .send({ statusCode: 550, message: "Error during user request" });
   }
 };
+
+// Comments
+const getCommentsById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const comments = await blogPostService.getCommentsById(id);
+    if (!comments) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: "Post non trovato!",
+      });
+    }
+    res.status(200).send({ statusCode: 200, comments });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      statusCode: 500,
+      message: "Error during user request",
+    });
+  }
+};
+
+const getSingleCommentById = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const comment = await blogPostService.getSingleCommentById(id, commentId);
+    if (!comment) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: "Post non trovato o commento non appartenente a questo post",
+      });
+    }
+    res.status(200).send({ statusCode: 200, comment });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      statusCode: 500,
+      message: "Error during user request",
+    });
+  }
+};
+
+const createCommentById = async (req, res) => {
+  try {
+    const { body } = req;
+    const { id } = req.params;
+    const updatedPost = await blogPostService.createCommentById(id, body);
+    if (updatedPost.author) {
+      await sendMail(
+        updatedPost.author,
+        "Commento caricato su sotto al post!",
+        `Ciao ${updatedPost.author}, il tuo commento è stato caricato. Contenuto commento: ${updatedPost.text}`,
+      );
+    }
+    res.status(201).send({ statusCode: 201, updatedPost });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      statusCode: 500,
+      message: "Error during user request",
+    });
+  }
+};
+
+const editCommentById = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const { body } = req;
+    const comment = await blogPostService.editCommentById(body, id, commentId);
+
+    if (!comment) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: "Post non trovato o commento non appartenente a questo post",
+      });
+    }
+    res.status(200).send({ statusCode: 200, comment });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      statusCode: 500,
+      message: "Error during user request",
+    });
+  }
+};
+
+const deleteCommentById = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const comment = await blogPostService.deleteCommentById(id, commentId);
+
+    if (!comment) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: "Post non trovato o commento non appartenente a questo post",
+      });
+    }
+
+    res.status(200).send({ statusCode: 200, comment });
+  } catch (e) {
+    console.error(e);
+    res.status(500).send({
+      statusCode: 500,
+      message: "Error during user request",
+    });
+  }
+};
+
 module.exports = {
   getPosts,
   getSinglePost,
@@ -132,4 +239,9 @@ module.exports = {
   editPost,
   deletePost,
   uploadCover,
+  getCommentsById,
+  getSingleCommentById,
+  createCommentById,
+  editCommentById,
+  deleteCommentById,
 };

@@ -1,4 +1,5 @@
 const blogPostSchema = require("./blogPosts.schema");
+const commentSchema = require("../comments/comments.schema");
 
 const getPosts = async (page, pageSize, title) => {
   const query = title ? { title: { $regex: title, $options: "i" } } : {};
@@ -32,10 +33,69 @@ const editPost = async (id, body) => {
 const deletePost = async (id) => {
   return await blogPostSchema.findByIdAndDelete(id);
 };
+
+// Comments
+
+const isCommentLinkedToPost = async (postId, commentId) => {
+  const post = await blogPostSchema.findById(postId);
+  if (!post) return false;
+
+  return post.comments.some((id) => id.toString() === commentId);
+};
+
+const getCommentsById = async (id) => {
+  return await blogPostSchema.findById(id).populate("comments");
+};
+
+const getSingleCommentById = async (id, commentId) => {
+  const isValid = await isCommentLinkedToPost(id, commentId);
+  if (!isValid) return null;
+  return await commentSchema.findById(commentId);
+};
+
+const createCommentById = async (id, body) => {
+  const newComment = await commentSchema.create(body);
+  const updatePost = await blogPostSchema
+    .findByIdAndUpdate(
+      id,
+      { $push: { comments: newComment._id } },
+      { new: true },
+    )
+    .populate("comments");
+  return updatePost;
+};
+
+const editCommentById = async (body, id, commentId) => {
+  const isValid = await isCommentLinkedToPost(id, commentId);
+  if (!isValid) return null;
+
+  return await commentSchema.findByIdAndUpdate(commentId, body, {
+    new: true,
+  });
+};
+
+const deleteCommentById = async (id, commentId) => {
+  const isValid = await isCommentLinkedToPost(id, commentId);
+  if (!isValid) return null;
+
+  const deletedComment = await commentSchema.findByIdAndDelete(commentId);
+
+  await blogPostSchema.findByIdAndUpdate(
+    id,
+    { $pull: { comments: deletedComment._id } },
+    { new: true },
+  );
+  return deletedComment;
+};
 module.exports = {
   getPosts,
   getSinglePost,
   createPost,
   editPost,
   deletePost,
+  getCommentsById,
+  getSingleCommentById,
+  createCommentById,
+  editCommentById,
+  deleteCommentById,
 };
