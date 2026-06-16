@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
-const EXCLUDED_ROUTES = ["/auth/login", "/authors"];
+const EXCLUDED_ROUTES = [
+  "/auth/login",
+  "/auth/google",
+  "/auth/google/callback",
+  "/authors",
+];
 
 const verifyToken = async (req, res, next) => {
   if (EXCLUDED_ROUTES.includes(req.path)) return next();
@@ -19,12 +24,17 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    req.author = jwt.verify(token, process.env.JWT_SECRET);
+    decodedPayload = jwt.verify(token, process.env.JWT_SECRET);
+
+    req.author = {
+      ...decodedPayload,
+      _id: decodedPayload.id || decodedPayload._id,
+    };
     next();
   } catch (e) {
     return res
       .status(401)
-      .send({ statusCode: 401, message: "Unvalid or expired token!" });
+      .send({ statusCode: 401, message: "Invalid or expired token!" });
   }
 };
 

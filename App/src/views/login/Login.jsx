@@ -189,6 +189,26 @@ const Login = () => {
               >
                 {isLogin ? "Login" : "Crea Account"}
               </button>
+              <div className="d-flex align-items-center mb-3">
+                <hr className="flex-grow-1" />
+                <span className="mx-2 text-muted">OPPURE</span>
+                <hr className="flex-grow-1" />
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-outline-dark btn-lg w-100 fw-bold mb-3 d-flex align-items-center justify-content-center gap-2"
+                onClick={() =>
+                  (window.location.href = "http://localhost:9099/auth/google")
+                }
+              >
+                <img
+                  src="https://www.svgrepo.com/show/303108/google-icon-logo.svg"
+                  alt="Google Logo"
+                  style={{ width: "20px" }}
+                />
+                Accedi con Google
+              </button>
               <div className="text-center mt-3">
                 <span className="text-muted">
                   {isLogin ? "Non hai un account? " : "Hai già un account? "}

@@ -10,6 +10,7 @@ const verifyToken = require("./middlewares/auth/auth.middleware");
 const authRoute = require("./modules/auth/auth.route");
 const errorHandler = require("./middlewares/errors/errorHandler");
 const { requestLogger } = require("./middlewares/logger/logger");
+const googleOauthRoute = require("./modules/oauth/google/oauth.route")
 
 server.use(cors());
 server.use(express.json());
@@ -18,5 +19,6 @@ server.use(verifyToken);
 server.use("/authors", authorsRoute);
 server.use("/blogPosts", blogPostsRoute);
 server.use("/auth", authRoute);
+server.use("/auth", googleOauthRoute);
 server.use(errorHandler);
 initServer(PORT, server);
