@@ -1,22 +1,21 @@
-const { res } = require("express");
 const authorService = require("./authors.service");
-const authors = require("./authors.route");
 const { sendMail } = require("../../modules/mail/mail");
+const UserNotFoundException = require("../../exception/authors/UserNotFoundException");
 
-const getAuthors = async (req, res) => {
+const getAuthors = async (req, res, next) => {
   try {
     const authors = await authorService.getAuthors();
+    if (authors.length === 0) {
+      throw new UserNotFoundException();
+    }
+
     res.status(200).send({ statusCode: 200, authors });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
 
-const createAuthor = async (req, res) => {
+const createAuthor = async (req, res, next) => {
   try {
     const { body } = req;
     const author = await authorService.createAuthor(body);
@@ -30,92 +29,63 @@ const createAuthor = async (req, res) => {
     }
     res.status(201).send({ statusCode: 201, author });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
 
-const getSingleAuthor = async (req, res) => {
+const getSingleAuthor = async (req, res, next) => {
   try {
     const { id } = req.params;
     const author = await authorService.getSingleAuthor(id);
     if (!author) {
-      return res
-        .status(404)
-        .send({ statusCode: 404, message: "Autore non trovato!" });
+      throw new UserNotFoundException("Autore non trovato con questo ID");
     }
     res.status(200).send({ statusCode: 200, author });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
 
-const editAuthor = async (req, res) => {
+const editAuthor = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { body } = req;
     const author = await authorService.editAuthor(id, body);
     if (!author) {
-      return res
-        .status(404)
-        .send({ statusCode: 404, message: "Autore non trovato!" });
+      throw new UserNotFoundException("Autore non trovato con questo ID");
     }
     res.status(200).send({ statusCode: 200, author });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
-const deleteAuthor = async (req, res) => {
+const deleteAuthor = async (req, res, next) => {
   try {
     const { id } = req.params;
     const author = await authorService.deleteAuthor(id);
     if (!author) {
-      console.error(e);
-      return res
-        .status(404)
-        .send({ statusCode: 404, message: "Autore non trovato!" });
+      throw new UserNotFoundException("Autore non trovato con questo ID");
     }
     res.status(200).send({ statusCode: 200, author });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
-const getPostsByAuthor = async (req, res) => {
+const getPostsByAuthor = async (req, res, next) => {
   try {
     const { id } = req.params;
     const blogPosts = await authorService.getPostsByAuthor(id);
 
     if (!blogPosts) {
-      return res
-        .status(404)
-        .send({ statusCode: 404, message: "Autore non trovato!" });
+      throw new UserNotFoundException("Autore non trovato con questo ID");
     }
     res.status(200).send({ statusCode: 200, blogPosts });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
 
-const uploadAvatar = async (req, res) => {
+const uploadAvatar = async (req, res, next) => {
   try {
     const { authorId } = req.params;
     const imageUrl = req.file.path;
@@ -124,17 +94,11 @@ const uploadAvatar = async (req, res) => {
     });
 
     if (!updateAuthor) {
-      return res
-        .status(404)
-        .send({ statusCode: 404, message: "Autore non trovato" });
+      throw new UserNotFoundException("Autore non trovato con questo ID");
     }
     res.status(200).send({ statusCode: 200, author: updateAuthor });
   } catch (e) {
-    console.error(e);
-    res.status(500).send({
-      statusCode: 500,
-      message: "Errore during user request",
-    });
+    next(e);
   }
 };
 module.exports = {

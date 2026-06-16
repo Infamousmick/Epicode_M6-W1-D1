@@ -6,9 +6,17 @@ const server = express();
 const authorsRoute = require("./modules/authors/authors.route");
 const blogPostsRoute = require("./modules/blogPosts/blogPosts.route");
 const cors = require("cors");
+const verifyToken = require("./middlewares/auth/auth.middleware");
+const authRoute = require("./modules/auth/auth.route");
+const errorHandler = require("./middlewares/errors/errorHandler");
+const { requestLogger } = require("./middlewares/logger/logger");
 
 server.use(cors());
 server.use(express.json());
+server.use(requestLogger);
+server.use(verifyToken);
 server.use("/authors", authorsRoute);
 server.use("/blogPosts", blogPostsRoute);
+server.use("/auth", authRoute);
+server.use(errorHandler);
 initServer(PORT, server);

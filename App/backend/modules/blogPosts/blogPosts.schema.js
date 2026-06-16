@@ -18,7 +18,7 @@ const BlogPost = new mongoose.Schema(
     },
     readTime: {
       value: {
-        type: mongoose.Schema.Types.Int32,
+        type: Number,
         required: true,
       },
       unit: {
@@ -27,7 +27,8 @@ const BlogPost = new mongoose.Schema(
       },
     },
     author: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Author",
       required: true,
     },
     content: {

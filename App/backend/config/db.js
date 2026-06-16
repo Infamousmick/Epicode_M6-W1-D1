@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
+const pc = require("picocolors");
 
 const databaseConnectionString = process.env.MONGO_URI;
 
 const initDatabaseConnection = async () => {
   try {
     await mongoose.connect(databaseConnectionString);
-    console.log("Database connected successfully");
+    console.log(pc.green("Database connected successfully"));
   } catch (e) {
-    console.log("❌ Db connection error");
+    console.log(pc.red("❌ Db connection error"));
     process.exit(1);
   }
 };
@@ -15,7 +16,7 @@ const initDatabaseConnection = async () => {
 const startServer = async (port, server) => {
   await initDatabaseConnection();
   server.listen(port, () => {
-    console.log(`Server running and listening on port ${port}`);
+    console.log(pc.green(`Server running and listening on port ${port}`));
   });
 };
 

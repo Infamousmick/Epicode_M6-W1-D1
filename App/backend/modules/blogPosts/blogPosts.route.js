@@ -3,11 +3,20 @@ const blogPosts = express.Router();
 const blogPostsController = require("./blogPosts.controller");
 const upload = require("../../middlewares/multer/index");
 const blogPostsSchema = require("./blogPosts.schema");
+const {
+  postValidationRules,
+  validate,
+} = require("../../middlewares/validation/blogPosts.validation");
 
 blogPosts.get("/", blogPostsController.getPosts);
 blogPosts.get("/:id", blogPostsController.getSinglePost);
 
-blogPosts.post("/", blogPostsController.createPost);
+blogPosts.post(
+  "/",
+  postValidationRules,
+  validate,
+  blogPostsController.createPost,
+);
 blogPosts.put("/:id", blogPostsController.editPost);
 blogPosts.delete("/:id", blogPostsController.deletePost);
 blogPosts.patch(

@@ -29,23 +29,32 @@ const NewBlogPost = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newPost = {
-      title: form.title || "Titolo Senza Nome",
-      category: form.category || "Tech",
-      content: text,
-      cover: "https://picsum.photos/800/400",
-      readTime: {
-        value: 2,
-        unit: "minuti",
-      },
-      author: "mario.rossi@epicode.com",
-    };
-
     try {
+      const token = localStorage.getItem("token");
+      const authorString = localStorage.getItem("author");
+
+      if (!token || !authorString) {
+        alert("Devi fare il login per creare un post");
+        return;
+      }
+      const authorObj = JSON.parse(authorString);
+
+      const newPost = {
+        title: form.title || "Titolo Senza Nome",
+        category: form.category || "Tech",
+        content: text,
+        cover: "https://picsum.photos/800/400",
+        readTime: {
+          value: 2,
+          unit: "minuti",
+        },
+        author: authorObj._id,
+      };
       const response = await fetch("http://localhost:9099/blogPosts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(newPost),
       });
@@ -63,6 +72,9 @@ const NewBlogPost = (props) => {
             `http://localhost:9099/blogPosts/${newPostId}/cover`,
             {
               method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
               body: formData,
             },
           );
@@ -76,9 +88,8 @@ const NewBlogPost = (props) => {
           alert("Articolo creato con successo (senza copertina)");
         }
       } else {
-        alert(
-          "Errore nella creazione. Sicuro che il titolo sia sotto i 20 caratteri?",
-        );
+        const errorData = await response.json();
+        alert("Errore dal Server: " + errorData.message);
       }
     } catch (error) {
       console.error("Errore di rete:", error);

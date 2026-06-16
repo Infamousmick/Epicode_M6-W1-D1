@@ -2,10 +2,19 @@ const express = require("express");
 const authors = express.Router();
 const authorController = require("./authors.controller");
 const upload = require("../../middlewares/multer/index");
+const {
+  authorValidationRules,
+  validate,
+} = require("../../middlewares/validation/authors.validation");
 
 authors.get("/", authorController.getAuthors);
 authors.get("/:id", authorController.getSingleAuthor);
-authors.post("/", authorController.createAuthor);
+authors.post(
+  "/",
+  authorValidationRules,
+  validate,
+  authorController.createAuthor,
+);
 authors.patch(
   "/:authorId/avatar",
   upload.single("avatar"),

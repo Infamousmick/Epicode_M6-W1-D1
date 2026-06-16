@@ -1,12 +1,14 @@
 const blogPostSchema = require("./blogPosts.schema");
 const commentSchema = require("../comments/comments.schema");
+require("../authors/authors.schema");
 
 const getPosts = async (page, pageSize, title) => {
   const query = title ? { title: { $regex: title, $options: "i" } } : {};
   const posts = await blogPostSchema
     .find(query)
     .limit(pageSize)
-    .skip((page - 1) * pageSize);
+    .skip((page - 1) * pageSize)
+    .populate("author");
 
   const totalPosts = await blogPostSchema.countDocuments(query);
   const totalPages = Math.ceil(totalPosts / pageSize);

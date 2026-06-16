@@ -1,5 +1,6 @@
 const authorSchema = require("./authors.schema");
 const blogPostSchema = require("../blogPosts/blogPosts.schema");
+
 const getAuthors = async () => {
   const authors = await authorSchema.find();
   return authors;
