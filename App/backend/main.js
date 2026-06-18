@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const initServer = require("./config/db");
-const PORT = 9099;
+const PORT = process.env.PORT;
 const server = express();
 const authorsRoute = require("./modules/authors/authors.route");
 const blogPostsRoute = require("./modules/blogPosts/blogPosts.route");
