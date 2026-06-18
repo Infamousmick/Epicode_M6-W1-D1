@@ -44,7 +44,7 @@ const Home = (props) => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:9099/blogPosts?page=1&pageSize=10&title=${query}`,
+        `${import.meta.env.VITE_SERVER_URL}/blogPosts?page=1&pageSize=10&title=${query}`,
         {
           method: "GET",
           headers: {

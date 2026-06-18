@@ -11,11 +11,14 @@ const OAuthSuccess = () => {
 
     const getMe = async () => {
       try {
-        const response = await fetch("http://localhost:9099/auth/me", {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/auth/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.ok) {
           const authorData = await response.json();

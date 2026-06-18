@@ -50,7 +50,7 @@ const NewBlogPost = (props) => {
         },
         author: authorObj._id,
       };
-      const response = await fetch("http://localhost:9099/blogPosts", {
+      const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/blogPosts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const NewBlogPost = (props) => {
           formData.append("cover", coverFile);
 
           const coverResponse = await fetch(
-            `http://localhost:9099/blogPosts/${newPostId}/cover`,
+            `${import.meta.env.VITE_SERVER_URL}/blogPosts/${newPostId}/cover`,
             {
               method: "PATCH",
               headers: {

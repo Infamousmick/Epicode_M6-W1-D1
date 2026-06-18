@@ -19,12 +19,15 @@ const Profile = () => {
           return;
         }
 
-        const response = await fetch("http://localhost:9099/auth/me", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_URL}/auth/me`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
 
         if (response.ok) {
           const userData = await response.json();

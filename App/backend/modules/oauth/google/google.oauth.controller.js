@@ -28,7 +28,7 @@ const manageOauthCallback = async (req, res, next) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    const redirectUrl = `http://localhost:3000/auth/success?token=${token}`;
+    const redirectUrl = `${process.env.FRONTEND_URL}/auth/success?token=${token}`;
     res.redirect(redirectUrl);
   } catch (e) {
     console.error(e);
