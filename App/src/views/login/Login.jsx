@@ -41,7 +41,7 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/login`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVERURL}/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +72,7 @@ const Login = () => {
           ...formData,
           avatar: dynamicAvatar,
         };
-        const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/authors`, {
+        const response = await fetch(`${process.env.REACT_APP_SERVERURL}/authors`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(dataToSend),
@@ -199,7 +199,7 @@ const Login = () => {
                 type="button"
                 className="btn btn-outline-dark btn-lg w-100 fw-bold mb-3 d-flex align-items-center justify-content-center gap-2"
                 onClick={() =>
-                  (window.location.href = `${import.meta.env.VITE_SERVER_URL}/auth/google`)
+                  (window.location.href = `${process.env.REACT_APP_SERVERURL}/auth/google`)
                 }
               >
                 <img

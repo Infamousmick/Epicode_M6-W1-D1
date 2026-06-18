@@ -20,7 +20,7 @@ const Profile = () => {
         }
 
         const response = await fetch(
-          `${import.meta.env.VITE_SERVER_URL}/auth/me`,
+          `${process.env.REACT_APP_SERVERURL}/auth/me`,
           {
             method: "GET",
             headers: {
