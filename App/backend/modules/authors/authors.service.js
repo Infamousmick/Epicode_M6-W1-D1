@@ -9,7 +9,9 @@ const getAuthors = async () => {
 const createAuthor = async (body) => {
   const newAuthor = new authorSchema(body);
   await newAuthor.save();
-  return newAuthor;
+  const safeAuthor = newAuthor.toObject();
+  delete safeAuthor.password;
+  return safeAuthor;
 };
 
 const getSingleAuthor = async (id) => {

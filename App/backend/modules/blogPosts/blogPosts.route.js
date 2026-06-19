@@ -32,7 +32,7 @@ blogPosts.get(
   "/:id/comments/:commentId",
   blogPostsController.getSingleCommentById,
 );
-blogPosts.post("/:id", blogPostsController.createCommentById);
+blogPosts.post("/:id/comments", blogPostsController.createCommentById);
 blogPosts.put("/:id/comment/:commentId", blogPostsController.editCommentById);
 blogPosts.delete(
   "/:id/comment/:commentId",

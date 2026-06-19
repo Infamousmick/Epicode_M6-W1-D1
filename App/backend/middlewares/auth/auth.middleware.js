@@ -1,13 +1,17 @@
 const jwt = require("jsonwebtoken");
 const EXCLUDED_ROUTES = [
-  "/auth/login",
-  "/auth/google",
-  "/auth/google/callback",
-  "/authors",
+  { method: "POST", path: "/auth/login" },
+  { method: "GET", path: "/auth/google" },
+  { method: "GET", path: "/auth/google/callback" },
+  { method: "POST", path: "/authors" },
 ];
 
 const verifyToken = async (req, res, next) => {
-  if (EXCLUDED_ROUTES.includes(req.path)) return next();
+  const isExcludedRoute = EXCLUDED_ROUTES.some(
+    (route) => route.method === req.method && route.path === req.path,
+  );
+
+  if (isExcludedRoute) return next();
 
   const authHeader = req.header("authorization");
 
@@ -24,7 +28,7 @@ const verifyToken = async (req, res, next) => {
   }
 
   try {
-    decodedPayload = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedPayload = jwt.verify(token, process.env.JWT_SECRET);
 
     req.author = {
       ...decodedPayload,

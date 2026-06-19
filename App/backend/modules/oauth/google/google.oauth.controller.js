@@ -11,7 +11,8 @@ const manageOauthCallback = async (req, res, next) => {
         firstName: user.name.givenName || "Utente",
         lastName: user.name.familyName || "Google",
         email: user.emails[0].value,
-        password: "OAuthPassword123!",
+        authProvider: "google",
+        googleId: user.id,
         dateOfBirth: "1990-01-01",
         avatar: user.photos[0].value,
       });

@@ -21,7 +21,7 @@ const getPosts = async (page, pageSize, title) => {
 };
 
 const getSinglePost = async (id) => {
-  return await blogPostSchema.findById(id);
+  return await blogPostSchema.findById(id).populate("author");
 };
 
 const createPost = async (body) => {

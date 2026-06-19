@@ -1,5 +1,6 @@
 const blogPostService = require("./blogPosts.service");
 const { sendMail } = require("../../modules/mail/mail");
+const PostNotFoundException = require("../../exception/posts/PostsNotFoundException");
 
 const getPosts = async (req, res, next) => {
   try {
@@ -106,13 +107,13 @@ const uploadCover = async (req, res, next) => {
 const getCommentsById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const comment = await blogPostService.getCommentsById(id);
-    if (!comment) {
+    const post = await blogPostService.getCommentsById(id);
+    if (!post) {
       throw new PostNotFoundException(
         "Impossibile trovare un post con questo ID",
       );
     }
-    res.status(200).send({ statusCode: 200, comment });
+    res.status(200).send({ statusCode: 200, comments: post.comments });
   } catch (e) {
     next(e);
   }
@@ -145,11 +146,15 @@ const createCommentById = async (req, res, next) => {
       );
     }
     if (updatedPost.author) {
-      await sendMail(
-        req.author.email,
-        "Commento caricato su sotto al post!",
-        `Ciao ${req.author.firstName}, il tuo commento è stato caricato. Contenuto commento: ${updatedPost.text}`,
-      );
+      try {
+        await sendMail(
+          req.author.email,
+          "Commento caricato sotto al post!",
+          `Ciao ${req.author.firstName}, il tuo commento è stato caricato. Contenuto commento: ${body.text}`,
+        );
+      } catch (mailError) {
+        console.error("Errore invio mail commento:", mailError.message);
+      }
     }
     res.status(201).send({ statusCode: 201, updatedPost });
   } catch (e) {
