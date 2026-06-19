@@ -8,11 +8,17 @@ const {
   validate,
 } = require("../../middlewares/validation/blogPosts.validation");
 
+const setAuthenticatedAuthor = (req, res, next) => {
+  req.body.author = req.author?._id || req.author?.id || req.body.author;
+  next();
+};
+
 blogPosts.get("/", blogPostsController.getPosts);
 blogPosts.get("/:id", blogPostsController.getSinglePost);
 
 blogPosts.post(
   "/",
+  setAuthenticatedAuthor,
   postValidationRules,
   validate,
   blogPostsController.createPost,

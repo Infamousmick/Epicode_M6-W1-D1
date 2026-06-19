@@ -38,6 +38,12 @@ const NewBlogPost = (props) => {
         return;
       }
       const authorObj = JSON.parse(authorString);
+      const authorId = authorObj._id || authorObj.id;
+
+      if (!authorId) {
+        alert("Sessione non valida: effettua di nuovo il login.");
+        return;
+      }
 
       const newPost = {
         title: form.title || "Titolo Senza Nome",
@@ -48,7 +54,7 @@ const NewBlogPost = (props) => {
           value: 2,
           unit: "minuti",
         },
-        author: authorObj._id,
+        author: authorId,
       };
       const response = await fetch(`${process.env.REACT_APP_SERVERURL}/blogPosts`, {
         method: "POST",

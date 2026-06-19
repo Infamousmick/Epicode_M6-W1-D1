@@ -12,7 +12,7 @@ const errorHandler = require("./middlewares/errors/errorHandler");
 const { requestLogger } = require("./middlewares/logger/logger");
 const googleOauthRoute = require("./modules/oauth/google/oauth.route")
 
-server.use(cors());
+server.use(cors({origin: process.env.FRONTEND_URL}));
 server.use(express.json());
 server.use(requestLogger);
 server.use(verifyToken);
