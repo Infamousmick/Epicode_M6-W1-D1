@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Container, Form, InputGroup, Button } from "react-bootstrap";
@@ -11,11 +11,11 @@ const Home = (props) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("author");
     navigate("/login");
-  };
+  }, [navigate]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -38,7 +38,7 @@ const Home = (props) => {
     } else {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [handleLogout, navigate]);
 
   const fetchPosts = async (query = "") => {
     try {
@@ -57,7 +57,6 @@ const Home = (props) => {
         const data = await response.json();
         setPosts(data.blogPosts);
       } else {
-        const errorData = await response.json();
         console.log("Errore di risposta del server");
       }
     } catch (e) {

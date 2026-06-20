@@ -33,7 +33,7 @@ const getPostsByAuthor = async (id) => {
   const author = await authorSchema.findById(id);
   if (!author) return null;
 
-  return await blogPostSchema.find({ author: author.email });
+  return await blogPostSchema.find({ author: author._id }).populate("author");
 };
 module.exports = {
   getAuthors,

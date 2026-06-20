@@ -7,5 +7,5 @@
 
 ## Repository
 
-- Frontend: [`frontend`](./frontend)
-- Backend: [`backend`](./backend)
+- Frontend: [`frontend`](./App/frontend)
+- Backend: [`backend`](./App/backend)

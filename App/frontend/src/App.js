@@ -8,6 +8,7 @@ import Login from "./views/login/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import OAuthSuccess from "./views/oauthSuccess/OAuthSuccess";
 import BlogPost from "./components/blog/blog-post/BlogPost";
+import Profile from "./views/profile/Profile";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/new" element={<NewBlogPost />} />
         <Route path="/auth/success" element={<OAuthSuccess />} />
         <Route path="/blog/:id" element={<BlogPost />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Footer />
     </Router>

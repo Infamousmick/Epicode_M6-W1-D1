@@ -1,5 +1,5 @@
 const authorService = require("./authors.service");
-const { sendMail } = require("../../modules/mail/mail");
+const { sendMail } = require("../mail/mail");
 const UserNotFoundException = require("../../exception/authors/UserNotFoundException");
 
 const getAuthors = async (req, res, next) => {

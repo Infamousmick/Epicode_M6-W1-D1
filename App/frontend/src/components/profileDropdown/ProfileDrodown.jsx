@@ -3,11 +3,14 @@ import { Dropdown } from "react-bootstrap";
 import { useNavigate, useLocation } from "react-router-dom";
 import { LogOut } from "lucide-react";
 
-const Profile = () => {
+const ProfileDropdown = () => {
   const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const handleProfile = () => {
+    navigate("/profile");
+  };
 
   useEffect(() => {
     const getMyProfile = async () => {
@@ -37,7 +40,6 @@ const Profile = () => {
         }
       } catch (e) {
         console.error(e);
-        setError(e.message);
       }
     };
     getMyProfile();
@@ -85,7 +87,7 @@ const Profile = () => {
           <small className="text-muted fw-normal">{user.email}</small>
         </Dropdown.Header>
 
-        <Dropdown.Item onClick={() => alert("Pagina impostazioni in arrivo!")}>
+        <Dropdown.Item onClick={handleProfile}>
           Impostazioni Account
         </Dropdown.Item>
 
@@ -103,4 +105,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileDropdown;

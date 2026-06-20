@@ -1,5 +1,5 @@
 const blogPostService = require("./blogPosts.service");
-const { sendMail } = require("../../modules/mail/mail");
+const { sendMail } = require("../mail/mail");
 const PostNotFoundException = require("../../exception/posts/PostsNotFoundException");
 
 const getPosts = async (req, res, next) => {
